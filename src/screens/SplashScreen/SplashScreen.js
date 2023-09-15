@@ -6,25 +6,24 @@ export default function SplashScreen({ navigation }) {
     React.useEffect(() => {
         setTimeout(() => {
             navigation.replace(PATH.HOME);
-        }, 1000);
+        }, 2000);
     }, []);
 
     return (
         <View style={styles.container}>
             <Image
                 style={styles.logo}
-                source={{
-                    uri: "https://miro.medium.com/v2/resize:fit:2400/1*6mJO79AJUIV1qf3OzzQVtQ.png",
-                }}
+                source={require("../../shared/assets/loadingg.gif")}
             />
             <Text
                 style={{
-                    fontSize: 25,
+                    fontSize: 26,
                     fontWeight: "bold",
                     marginTop: 10,
+                    color: "white",
                 }}
             >
-                Enigmacamp
+                TokonyaDia.com
             </Text>
         </View>
     );
@@ -35,6 +34,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
+        backgroundColor: "#184c4c",
     },
     logo: {
         width: 200,

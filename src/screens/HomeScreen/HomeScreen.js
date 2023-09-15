@@ -34,7 +34,9 @@ const HomeScreen = ({ navigation }) => {
     };
 
     useEffect(() => {
+        dispatch(setIsLoading(true));
         dispatch(fetchProducts());
+        dispatch(setIsLoading(false));
     }, [dispatch]);
 
     useEffect(() => {
@@ -63,11 +65,10 @@ const HomeScreen = ({ navigation }) => {
         dispatch(createTransaction(productData))
             .then(() => {
                 dispatch(fetchProducts());
-                Alert.alert("Transaction Success !!");
+                Alert.alert("Transaction Success !! Data Has Been Updated");
             })
             .catch((error) => {
-                console.error("Error Create Transc. ", error);
-                Alert.alert("Transaction Failed!!");
+                Alert.alert("Transaction Failed! Please Try Again !");
             });
     };
 
