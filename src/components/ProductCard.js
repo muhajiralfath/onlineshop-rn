@@ -39,7 +39,7 @@ const ProductCard = ({ item, onBuyPress, userId }) => {
                     style={styles.buyButton}
                     onPress={() => onBuyPress(item.productPriceId)}
                 >
-                    <Text style={styles.buyButtonText}>Beli</Text>
+                    <Text style={styles.buyButtonText}>Buy</Text>
                 </TouchableOpacity>
                 <Button
                     style={{
