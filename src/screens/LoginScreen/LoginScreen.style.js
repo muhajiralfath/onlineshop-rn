@@ -12,30 +12,18 @@ const loginStyles = StyleSheet.create({
     form: {
         padding: 25,
         borderRadius: 15,
+        gap: 20,
     },
     headerForm: {
         alignItems: "center",
         justifyContent: "center",
-        paddingVertical: 50,
+        paddingVertical: 20,
     },
-    title: { fontWeight: "bold", fontSize: 20 },
-    label: {
-        fontSize: 16,
+    title: {
         fontWeight: "bold",
-        marginBottom: 8,
-    },
-    input: {
-        borderColor: "#ccc",
-        borderWidth: 0.5,
-        borderRadius: 4,
-        padding: 8,
-        marginBottom: 10,
-        backgroundColor: "white",
-    },
-    btn: {
-        backgroundColor: "#233d90",
-        padding: 10,
-        borderRadius: 10,
+        fontSize: 24,
+        color: "green",
+        alignSelf: "center",
     },
 });
 

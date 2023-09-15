@@ -3,7 +3,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { ActivityIndicator } from "@react-native-material/core";
 
-const LoadingScreen = () => {
+const Loading = () => {
     const isLoading = useSelector((state) => state.loading.isLoading);
     return (
         isLoading && (
@@ -16,7 +16,7 @@ const LoadingScreen = () => {
     );
 };
 
-export default LoadingScreen;
+export default Loading;
 
 const styles = StyleSheet.create({
     loading: {

@@ -3,15 +3,15 @@ import { StyleSheet, Text, View } from "react-native";
 import { Provider } from "react-redux";
 import { store } from "./src/store/store";
 import AppNavigation from "./src/navigation/RootNavigator";
-import LoadingScreen from "./src/screens/LoadingScreen/LoadingScreen";
+import Loading from "./src/shared/components/Loading";
 
 export default function App() {
     return (
         <Provider store={store}>
             <View style={styles.container}>
                 <AppNavigation />
-                <LoadingScreen />
-                <StatusBar />
+                <Loading />
+                <StatusBar style="auto" />
             </View>
         </Provider>
     );
