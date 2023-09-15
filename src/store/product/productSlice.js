@@ -1,9 +1,12 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
     products: [],
     status: "idle",
+    transactionStatus: "idle",
+    transactionError: null,
     error: null,
 };
 
@@ -17,6 +20,33 @@ export const fetchProducts = createAsyncThunk(
             return response.data.data;
         } catch (error) {
             throw error;
+        }
+    }
+);
+
+export const createTransaction = createAsyncThunk(
+    "transactions/createTransaction",
+    async (transactionData, thunkAPI) => {
+        try {
+            const token = await AsyncStorage.getItem("token");
+
+            const axiosConfig = {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            };
+
+            const response = await axios.post(
+                "http://10.10.100.254:8080/api/transactions",
+                transactionData,
+                axiosConfig
+            );
+            console.log(axiosConfig);
+            console.log(response.data.data);
+            return response.data.data;
+        } catch (error) {
+            console.error("Error:", error);
+            throw thunkAPI.rejectWithValue(error.response.data.errors);
         }
     }
 );
@@ -37,6 +67,17 @@ const productSlice = createSlice({
             .addCase(fetchProducts.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.error.message;
+            })
+            .addCase(createTransaction.pending, (state) => {
+                state.transactionStatus = "loading";
+                state.transactionError = null;
+            })
+            .addCase(createTransaction.fulfilled, (state) => {
+                state.transactionStatus = "succeeded";
+            })
+            .addCase(createTransaction.rejected, (state, action) => {
+                state.transactionStatus = "failed";
+                state.transactionError = action.error.message;
             });
     },
 });

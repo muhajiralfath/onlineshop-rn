@@ -13,7 +13,6 @@ export const loginUser = createAsyncThunk(
 
             if (response.status === 200) {
                 const data = response.data.data;
-                console.log(data);
 
                 thunkAPI.dispatch(loginSlice.actions.setIsLoggin(true));
 

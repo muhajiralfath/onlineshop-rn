@@ -47,10 +47,10 @@ const LoginScreen = ({ navigation }) => {
             try {
                 dispatch(setIsLoading(true));
                 const response = await dispatch(loginUser({ email, password }));
-                if (response) {
+                if (response.meta.requestStatus === "fulfilled") {
                     navigation.replace(PATH.HOME);
                 } else {
-                    Alert.alert("Login Failed !!!");
+                    Alert.alert("Login Failed !!! Invalid Email OR Password");
                 }
             } catch (error) {
                 console.error("Error Login ", error);
@@ -74,13 +74,14 @@ const LoginScreen = ({ navigation }) => {
             <View style={{ flex: 2, paddingHorizontal: 15 }}>
                 <View style={loginStyles.form}>
                     <Text style={[loginStyles.headerForm, loginStyles.title]}>
-                        Log in to Tokonyadia
+                        Log in to TokonyaDia
                     </Text>
                     <TextInput
                         placeholder="Ext. muhajiralfath@gmail.com"
                         variant="outlined"
                         label="Email"
                         color="green"
+                        value={email}
                         onChangeText={(val) => {
                             setEmail(val);
                             setInputErrors({
@@ -93,6 +94,7 @@ const LoginScreen = ({ navigation }) => {
                     <TextInput
                         variant="outlined"
                         label="Password"
+                        value={password}
                         color="green"
                         secureTextEntry={true}
                         placeholder="******"

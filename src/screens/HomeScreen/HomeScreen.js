@@ -1,4 +1,5 @@
 import {
+    Alert,
     FlatList,
     Image,
     StyleSheet,
@@ -6,33 +7,76 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import PATH from "../../navigation/NavigatiohPath";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts } from "../../store/product/productSlice";
+import {
+    createTransaction,
+    fetchProducts,
+} from "../../store/product/productSlice";
 import ProductCard from "../../components/ProductCard";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { setIsLoggin } from "../../store/auth/loginSlice";
+import { setIsLoading } from "../../store/loading/loadingSlice";
+import EmpetyListScreen from "../../shared/components/EmpetyList";
 
 const HomeScreen = ({ navigation }) => {
     const dispatch = useDispatch();
     const products = useSelector((state) => state.products.products);
-    const status = useSelector((state) => state.products.status);
-    const error = useSelector((state) => state.products.error);
     const isLoggin = useSelector((state) => state.login.isLoggin);
+    const [userId, setUserId] = useState("");
+
+    const getId = async () => {
+        const token = await AsyncStorage.getItem("id");
+        setUserId(token);
+    };
 
     useEffect(() => {
         dispatch(fetchProducts());
-        console.log(products);
-        console.log(isLoggin);
     }, [dispatch]);
+
+    useEffect(() => {
+        getId();
+    }, []);
 
     const renderItem = ({ item }) => (
         <ProductCard item={item} onBuyPress={handleBuy} />
     );
 
-    const handleBuy = (product) => {
-        console.log(`Membeli ${product.name}`);
+    const handleBuy = (productPriceId) => {
+        if (!isLoggin) {
+            Alert.alert("Please Login Firt to Buy Product");
+            return;
+        }
+        const productData = {
+            customerId: userId,
+            orderDetails: [
+                {
+                    productPriceId: productPriceId,
+                    quantity: 1,
+                },
+            ],
+        };
+
+        dispatch(createTransaction(productData))
+            .then(() => {
+                dispatch(fetchProducts());
+                Alert.alert("Transaction Success !!");
+            })
+            .catch((error) => {
+                console.error("Error Create Transc. ", error);
+                Alert.alert("Transaction Failed!!");
+            });
+    };
+
+    const logout = async () => {
+        dispatch(setIsLoading(true));
+        await AsyncStorage.removeItem("token");
+        await AsyncStorage.removeItem("id");
+        dispatch(setIsLoggin(false));
+        dispatch(setIsLoading(false));
     };
 
     return (
@@ -44,11 +88,11 @@ const HomeScreen = ({ navigation }) => {
                         style={{
                             width: "30%",
                         }}
-                        variant="text"
+                        variant="contained"
                         title="logout"
                         color="white"
                         leading={(props) => <Icon name="login" {...props} />}
-                        onPress={() => navigation.navigate(PATH.LOGIN)}
+                        onPress={logout}
                     />
                 ) : (
                     <Button
@@ -70,6 +114,7 @@ const HomeScreen = ({ navigation }) => {
                     keyExtractor={(item) => item.productId}
                     contentContainerStyle={styles.flatListContainer}
                     numColumns={2}
+                    ListEmptyComponent={() => <EmpetyListScreen />}
                 />
             </View>
         </View>

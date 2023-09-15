@@ -1,7 +1,16 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+    Alert,
+    Image,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import React from "react";
+import { Button } from "@react-native-material/core";
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
-const ProductCard = ({ item, onBuyPress }) => {
+const ProductCard = ({ item, onBuyPress, userId }) => {
     const formattedPrice = new Intl.NumberFormat("id-ID", {
         style: "currency",
         currency: "IDR",
@@ -19,12 +28,33 @@ const ProductCard = ({ item, onBuyPress }) => {
             <Text style={styles.name}>{item.productName}</Text>
             <Text style={styles.price}>{formattedPrice}</Text>
             <Text style={styles.stock}>Stock: {item.stock}</Text>
-            <TouchableOpacity
-                style={styles.buyButton}
-                onPress={() => onBuyPress(item)}
+            <View
+                style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: 10,
+                }}
             >
-                <Text style={styles.buyButtonText}>Beli</Text>
-            </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.buyButton}
+                    onPress={() => onBuyPress(item.productPriceId)}
+                >
+                    <Text style={styles.buyButtonText}>Beli</Text>
+                </TouchableOpacity>
+                <Button
+                    style={{
+                        width: "auto",
+                    }}
+                    variant="outlined"
+                    color="green"
+                    leading={(props) => <Icon name="cart" {...props} />}
+                    onPress={() =>
+                        Alert.alert(
+                            "Cart Under Maintenance !, Avaliable on Next Update "
+                        )
+                    }
+                />
+            </View>
         </View>
     );
 };
