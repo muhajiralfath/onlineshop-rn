@@ -1,13 +1,17 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Alert, Image, StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 import loginStyles from "./LoginScreen.style";
 import { Button, TextInput } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import PATH from "../../navigation/NavigatiohPath";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../../store/auth/loginSlice";
+import { setIsLoading } from "../../store/loading/loadingSlice";
 
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const dispatch = useDispatch();
 
     const [inputErrors, setInputErrors] = useState({
         isValidEmail: "",
@@ -32,6 +36,27 @@ const LoginScreen = ({ navigation }) => {
                     {errorValidation}
                 </Text>
             );
+        }
+    };
+
+    const handleLogin = async () => {
+        const errors = validateInputs();
+        if (Object.keys(errors).length > 0) {
+            setInputErrors(errors);
+        } else {
+            try {
+                dispatch(setIsLoading(true));
+                const response = await dispatch(loginUser({ email, password }));
+                if (response) {
+                    navigation.replace(PATH.HOME);
+                } else {
+                    Alert.alert("Login Failed !!!");
+                }
+            } catch (error) {
+                console.error("Error Login ", error);
+            } finally {
+                dispatch(setIsLoading(false));
+            }
         }
     };
 
@@ -97,7 +122,7 @@ const LoginScreen = ({ navigation }) => {
                             leading={(props) => (
                                 <Icon name="new-box" {...props} />
                             )}
-                            onPress={() => navigation.replace(PATH.HOME)}
+                            onPress={handleLogin}
                         />
                     </View>
                 </View>
