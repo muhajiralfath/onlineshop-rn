@@ -49,9 +49,10 @@ const HomeScreen = ({ navigation }) => {
 
     const handleBuy = (productPriceId) => {
         if (!isLoggin) {
-            Alert.alert("Please Login Firt to Buy Product");
+            Alert.alert("Please Login Firts to Buy Product");
             return;
         }
+        dispatch(setIsLoading(true));
         const productData = {
             customerId: userId,
             orderDetails: [
@@ -64,10 +65,14 @@ const HomeScreen = ({ navigation }) => {
 
         dispatch(createTransaction(productData))
             .then(() => {
+                dispatch(setIsLoading(false));
                 dispatch(fetchProducts());
-                Alert.alert("Transaction Success !! Data Has Been Updated");
+                Alert.alert(
+                    "Transaction Success !! Data Stock Has Been Updated"
+                );
             })
             .catch((error) => {
+                dispatch(setIsLoading(false));
                 Alert.alert("Transaction Failed! Please Try Again !");
             });
     };
